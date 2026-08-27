@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Бро-тренер</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  min-height:100%;
+}
+
+.wrap{
+  max-width:700px;
+  margin:auto;
+  padding:24px 16px;
+  text-align:center;
+}
+
+h1{
+  font-size:38px;
+  margin:10px 0 8px;
+}
+
+.task{
+  font-size:26px;
+  font-weight:700;
+  margin:20px 0 30px;
+}
+
+button{
+  display:block;
+  width:100%;
+  min-height:110px;
+  margin:18px 0;
+  border:6px solid #fff;
+  border-radius:18px;
+  font-size:34px;
+  font-weight:900;
+  color:#000;
+  cursor:pointer;
+}
+
+.done{
+  background:#ffffff;
+}
+
+.delay{
+  background:#ffd900;
+}
+
+.skip{
+  background:#ff9d9d;
+}
+
+button:active{
+  transform:scale(0.96);
+  filter:brightness(0.7);
+}
+
+#result{
+  display:none;
+  margin-top:35px;
+  padding:30px 10px;
+  border:6px solid #fff;
+  border-radius:18px;
+  font-size:42px;
+  font-weight:900;
+  background:#fff;
+  color:#000;
+}
+
+.small{
+  margin-top:18px;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<h1>БРО-ТРЕНЕР</h1>
+
+<div class="task">
+Выбери действие
+</div>
+
+<div id="buttons">
+
+<button class="done" onclick="sendCmd('DONE_V2','СДЕЛАЛ')">
+СДЕЛАЛ
+</button>
+
+<button class="delay" onclick="sendCmd('DELAY_30','+30 МИН')">
++30 МИН
+</button>
+
+<button class="skip" onclick="sendCmd('SKIP_V2','ПРОПУСТИТЬ')">
+ПРОПУСТИТЬ
+</button>
+
+</div>
+
+<div id="result">
+ПРИНЯТО ✓
+<div class="small" id="answer"></div>
+</div>
+
+</div>
+
+<script>
+async function sendCmd(cmd, text) {
+  const buttons = document.getElementById('buttons');
+  const result  = document.getElementById('result');
+  const answer  = document.getElementById('answer');
+
+  try {
+    await fetch('https://ntfy.sh/Bro_trener_cmd', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=UTF-8'
+      },
+      body: cmd
+    });
+
+    buttons.style.display = 'none';
+    answer.textContent = text;
+    result.style.display = 'block';
+
+    if (navigator.vibrate) {
+      navigator.vibrate(120);
+    }
+
+  } catch (e) {
+    result.style.display = 'block';
+    result.style.background = '#ff9d9d';
+    result.innerHTML = 'ОШИБКА<br><span class="small">Ответ не отправлен</span>';
+  }
+}
+</script>
+
+</body>
+</html>
